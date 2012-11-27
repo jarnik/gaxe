@@ -1,4 +1,4 @@
-package jarnik.gaxe;
+package gaxe;
 
 import nme.Assets;
 import nme.display.Bitmap;
