@@ -62,6 +62,8 @@ class Scene extends Sprite
 
     private function onCreate( e:Event ):Void {
         if ( !created ) {
+            if ( stage != null )
+                stage.addEventListener( Event.RESIZE, onResize );
             created = true;
             create();
         }
@@ -86,6 +88,17 @@ class Scene extends Sprite
     public function update( elapsed:Float ):Void {
         if ( scene != null )
             scene.update( elapsed );
+    }
+
+    private function onResize( e:Event ):Void {
+        if ( stage != null ) {
+            Gaxe.w = stage.stageWidth;
+            Gaxe.h = stage.stageHeight;
+        }
+        resize( Gaxe.w, Gaxe.h );
+    }    
+
+    public function resize( width:Float, height:Float ):Void {
     }
     
     // --------------- MENU ------------------------------------------------------- 
