@@ -52,16 +52,23 @@ class SoundLib
         }
     }
 
-    public static function play( url:String, volume:Float = 1 ):Void {
+    public static function play( url:String, volume:Float = 1, loop:Bool = false ):SoundChannel  {
         url = "assets/sfx/"+url;
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
             sound = Assets.getSound( url );
             sounds.set( url, sound );
         }
-        var channel:SoundChannel = sound.play( 0, 0, new SoundTransform( volume * master ) );
+		var loops:Int = 0;
+        #if windows
+           loops = ( loop ? -1 : 0 );
+        #else
+            loops = ( loop ? 1000 : 0 );
+        #end
+        var channel:SoundChannel = sound.play( 0, loops, new SoundTransform( volume * master ) );
         addChannel( channel, volume );
         channel.addEventListener( Event.SOUND_COMPLETE, onSoundComplete );
+		return channel;
     }
 
     private static function addChannel( channel:SoundChannel, volume:Float ):Void {
