@@ -40,11 +40,26 @@ class SoundLib
         cache = [];
         sounds = new Hash<Sound>();
         for ( item in list )
-            preload( "assets/sfx/"+item );
+            //preload( "assets/sfx/"+item );
+            preload( item );
 
     }
 
-    public static function preload( url:String ):Void {
+	public static function autoInit( _master:Float = 1 ):Void {
+		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\flash\haxe\nme\installer\Assets.hx
+		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\haxe\nme\installer\Assets.hx
+		// to make resourceTypes public 
+		Assets.initialize();
+		var soundAssets:Array<String> = [];
+		for ( k in Assets.resourceTypes.keys() ) {
+			if ( Assets.resourceTypes.get( k ) == "sound" ) {
+				soundAssets.push( k );
+			}
+		}
+		init( _master, soundAssets );
+	}
+	
+    private static function preload( url:String ):Void {
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
             sound = Assets.getSound( url );
@@ -53,7 +68,7 @@ class SoundLib
     }
 
     public static function play( url:String, volume:Float = 1, loop:Bool = false ):SoundChannel  {
-        url = "assets/sfx/"+url;
+        //url = "assets/sfx/"+url;
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
             sound = Assets.getSound( url );
@@ -111,6 +126,7 @@ class SoundLib
         music = sound;   
         #if android
             musicChannel = music.play( 0, -1 , new SoundTransform( 1 * master ));
+			// edit c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\android\template\src\org\haxe\nme\Sound.java playMusic and set mp.setLooping( true );
         #else
             musicChannel = music.play( 0, 1000 , new SoundTransform( 1 * master ));
         #end
