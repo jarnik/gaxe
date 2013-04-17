@@ -145,10 +145,10 @@ class Scene extends Sprite
     
     public function switchState( id:Dynamic ):Void {
         Debug.log("["+this+"] switching to state: "+id);
-        handleSwitchState( id );
-        state = id;        
+        if ( handleSwitchState( id ) )
+			state = id;        
     }
-    private function handleSwitchState( id:Dynamic ):Void {} //override
+    private function handleSwitchState( id:Dynamic ):Bool { return true; } //override
 
     public function handleTouch( e:TouchEvent ):Void {} // override
 }
