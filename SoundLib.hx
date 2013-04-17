@@ -138,6 +138,7 @@ class SoundLib
         if ( musicChannel != null ) {
             musicChannel.stop();
             musicChannel = null;
+			music = null;
         }
     }
 
