@@ -54,8 +54,6 @@ class Debug extends Sprite
         debugLayer.mouseEnabled = false;
         debugLayer.visible = false;
 
-        Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, keyHandler );
-
         //Lib.current.stage.addChild( new FPS( 10, 10, 0xffffff ) );
         return debugLayer;
     }
@@ -64,13 +62,9 @@ class Debug extends Sprite
         debugLayer.visible = true;
     }
 	
-    public static function keyHandler( e:KeyboardEvent ):Void {
-        switch ( e.keyCode ) {
-            case 219:
-                debugLayer.visible = !debugLayer.visible;
-            default:
-        }
-    }
+	public static function toggleLog():Void {
+		debugLayer.visible = !debugLayer.visible;
+	}
 
     public static function log( msg:String ):Void {
         if ( buffer == null )

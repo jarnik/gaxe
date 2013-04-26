@@ -148,6 +148,10 @@ class Gaxe extends Scene
                 } else
                     menu.hide();
             }
+			if ( e.type == KeyboardEvent.KEY_DOWN && e.keyCode == 219 ) {
+				Debug.toggleLog();
+			}
+			head.getCurrentScene().handleKey( e );
         #end
     }
 

@@ -121,6 +121,8 @@ class Scene extends Sprite
         scene = fetchScene( newScene );
         scene.visible = true;
 		sceneLayer.addChild( scene );
+		stage.focus = this;
+		stage.focus = null;
     }
 
     private function fetchScene( sceneClass:Class<Scene> ):Scene {
@@ -150,5 +152,7 @@ class Scene extends Sprite
     }
     private function handleSwitchState( id:Dynamic ):Bool { return true; } //override
 
-    public function handleTouch( e:TouchEvent ):Void {} // override
+    public function handleTouch( e:TouchEvent ):Void { } // override
+	
+    public function handleKey( e:KeyboardEvent ):Void {} // override
 }
