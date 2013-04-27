@@ -121,9 +121,13 @@ class Scene extends Sprite
         scene = fetchScene( newScene );
         scene.visible = true;
 		sceneLayer.addChild( scene );
+		refocus();
+    }
+	
+	private function refocus():Void  {
 		stage.focus = this;
 		stage.focus = null;
-    }
+	}
 
     private function fetchScene( sceneClass:Class<Scene> ):Scene {
     //private function fetchScene( sceneClass:Dynamic ):Scene {
