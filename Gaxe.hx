@@ -177,5 +177,9 @@ class Gaxe extends Scene
         if ( head != null && sendHandleEvent )
             head.handleTouch( e );
     }
+	
+	public static function switchScene( newScene:Class<Scene> ):Void {
+		head.switchScene( newScene );
+	}
 
 }
