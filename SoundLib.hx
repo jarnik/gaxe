@@ -29,11 +29,14 @@ typedef SoundInstance = {
 class SoundLib
 {
     
-    private static var sounds:Hash<Sound>;
+    public static var sounds:Hash<Sound>;
     private static var cache:Array<SoundInstance>;
     private static var master:Float;
     private static var music:Sound;
     private static var musicChannel:SoundChannel;
+	
+	private static var soundFileExtension:String;
+	private static var musicFileExtension:String;
 
     public static function init( _master:Float, list:Array<String> ):Void {
         master = _master; 
@@ -50,9 +53,19 @@ class SoundLib
 		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\haxe\nme\installer\Assets.hx
 		// to make resourceTypes public 
 		Assets.initialize();
+		
+		#if neko
+			soundFileExtension = ".ogg";
+			musicFileExtension = ".ogg";
+		#else
+			soundFileExtension = ".mp3";
+			musicFileExtension = ".ogg";
+		#end
+		
 		var soundAssets:Array<String> = [];
 		for ( k in Assets.resourceTypes.keys() ) {
-			if ( Assets.resourceTypes.get( k ) == "sound" ) {
+			if ( Assets.resourceTypes.get( k ) == "sound"  
+				&& StringTools.endsWith( k, soundFileExtension ) ) {
 				soundAssets.push( k );
 			}
 		}
@@ -69,6 +82,7 @@ class SoundLib
 
     public static function play( url:String, volume:Float = 1, loop:Bool = false ):SoundChannel  {
         //url = "assets/sfx/"+url;
+		url += soundFileExtension;
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
             sound = Assets.getSound( url );
@@ -113,14 +127,15 @@ class SoundLib
         }
     }
 
-    public static function playMusic( url:String ):Void {
+    public static function playMusic( url:String ):SoundChannel {
+		url += musicFileExtension;
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
             sound = Assets.getSound( url );
             sounds.set( url, sound );
         }
         if ( sound == music )
-            return;
+            return musicChannel;
 
         stopMusic();
         music = sound;   
@@ -132,6 +147,7 @@ class SoundLib
         #end
         //Debug.log("music running, hopefully");
         addChannel( musicChannel, 1 );
+		return musicChannel;
     }
 
     public static function stopMusic():Void {
