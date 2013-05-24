@@ -57,7 +57,7 @@ class SoundLib
 		Assets.initialize();
 		
 		#if neko
-			soundFileExtension = ".mp3";
+			soundFileExtension = ".ogg";
 			musicFileExtension = ".ogg";
 		#else
 			soundFileExtension = ".mp3";

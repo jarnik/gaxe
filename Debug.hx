@@ -38,8 +38,6 @@ class Debug extends Sprite
         debugLayer = new Sprite();
         debug = new TextField(); 
         debug.defaultTextFormat = format;
-        debug.height = Gaxe.h - 20;
-        debug.width = Gaxe.w * Gaxe.upscale;
         debug.selectable = false;
         debug.mouseEnabled = false;
         debug.embedFonts = true;
@@ -64,6 +62,13 @@ class Debug extends Sprite
 	
 	public static function toggleLog():Void {
 		debugLayer.visible = !debugLayer.visible;
+	}
+	
+	public static function resize():Void {
+		if ( debug == null )
+			return;
+		debug.height = Lib.current.stage.stageHeight - 20;
+        debug.width = Lib.current.stage.stageWidth;
 	}
 
     public static function log( msg:String ):Void {

@@ -13,6 +13,7 @@ import nme.display.Sprite;
 import nme.display.Stage;
 import nme.display.StageAlign;
 import nme.display.StageScaleMode;
+import nme.display.StageDisplayState;
 import nme.geom.Rectangle;
 import nme.Lib;
 import nme.text.TextField;
@@ -31,6 +32,8 @@ class Gaxe extends Scene
     public static var h:Int;
     public static var upscale:Float;
     public static var head:Gaxe;
+	
+	private static var borders:Array<Sprite>;
 
     private static var timeElapsed:Float;
     private static var prevFrameTime:Float;
@@ -43,7 +46,7 @@ class Gaxe extends Scene
     public static var touchCount:Int;
     public static var touches:Array<Point>;
 
-    public static function loadGaxe( _head:Gaxe, _menu:IMenu, _fixedW:Int = 480, _fixedH:Int = 320 ):Void {
+    public static function loadGaxe( _head:Gaxe, _menu:IMenu, _fixedW:Int = 0, _fixedH:Int = 0 ):Void {
         Gaxe.head = _head;
         Gaxe.menu = _menu;
         fixedW = _fixedW;
@@ -58,6 +61,7 @@ class Gaxe extends Scene
         }
         Lib.current.stage.addChild( head );
         Lib.current.stage.addEventListener( Event.ENTER_FRAME, updateFrame );
+        Lib.current.stage.addEventListener( Event.RESIZE, onResize );
         Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyHandler );
         Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyHandler );
 
@@ -81,38 +85,96 @@ class Gaxe extends Scene
         else
             head.update( timeElapsed );        
     }
+	
+	private static function onResize( e:Event ) {
+		// image is 120x80
+        // optimus is 480x320
+        // flash 720x480
+        if ( fixedW != 0 && fixedH != 0 ) {
+            w = fixedW;
+            h = fixedH;     
+			var appRatio:Float = w / h;
+			var stageRatio:Float = Lib.current.stage.stageWidth / Lib.current.stage.stageHeight;
+			if ( stageRatio > appRatio )
+				upscale = Lib.current.stage.stageHeight / h;
+			else
+				upscale = Lib.current.stage.stageWidth / w;
+        } else {
+            w = Lib.current.stage.stageWidth; 
+            h = Lib.current.stage.stageHeight;
+			upscale = 1;
+        }
+		head.x = ( Lib.current.stage.stageWidth - w  * upscale ) / 2;
+		head.y = ( Lib.current.stage.stageHeight - h  * upscale ) / 2;
+		setBorders( 
+			head.y, 
+			head.y, 
+			head.x, 
+			head.x 
+		);
+		Debug.log("resized "+w+" x "+h+" scale "+upscale);
+        head.scaleX = upscale;
+		head.scaleY = upscale;
+		head.resize( w, h );
+		Debug.resize();
+	}
+	
+	private static function setBorders( top:Float, bottom:Float, left:Float, right:Float ):Void {
+		if ( borders == null ) {
+			borders = [];
+			var b:Sprite;
+			for ( i in 0...4 ) {
+				borders.push( b = new Sprite() );
+				b.graphics.beginFill( 0, 1 );
+				b.graphics.drawRect( 0, 0, 10, 10 );
+				b.graphics.endFill();
+				Lib.current.stage.addChild( b );
+			}
+		}
+		// top
+		borders[ 0 ].width = Lib.current.stage.stageWidth;
+		borders[ 0 ].height = top;
+		// bottom
+		borders[ 1 ].width = Lib.current.stage.stageWidth;
+		borders[ 1 ].height = bottom;
+		borders[ 1 ].y = Lib.current.stage.stageHeight - bottom;
+		// left
+		borders[ 2 ].width = left;
+		borders[ 2 ].height = Lib.current.stage.stageHeight;
+		// right
+		borders[ 3 ].width = right;
+		borders[ 3 ].height = Lib.current.stage.stageHeight;
+		borders[ 3 ].x = Lib.current.stage.stageWidth - right;
+	}
 
     private static function initGaxe():Void {
         inited = true;
 
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;        
-
-        // image is 120x80
-        // optimus is 480x320
-        // flash 720x480
-        if ( fixedW != 0 && fixedH != 0 ) {
-            w = fixedW;
-            h = fixedH;       
-        } else {
-            w = Lib.current.stage.stageWidth; 
-            h = Lib.current.stage.stageHeight; 
-        }
-        upscale = Lib.current.stage.stageWidth / w;
-
+        
         prevFrameTime = Lib.getTimer() / 1000;
 
 		Lib.current.stage.addChild( Debug.initLog() );
         Debug.log("started...");
-        Debug.log("upscale "+upscale+" "+w+"x"+h);
+        //Debug.log("upscale "+upscale+" "+w+"x"+h);
         //Lib.current.stage.addChild( new Bitmap(Assets.getBitmapData( "assets/buttonRed.png" ), nme.display.PixelSnapping.AUTO, false ) );
         
-        head.scaleX = upscale;
-        head.scaleY = upscale;
+		onResize( null );
+		
         head.visible = true;
 
         head.init();
     }
+	
+	public static function setFullscreen( full:Bool = true ):Void {
+		Debug.log("going "+ ( full ? "fullscreen" : "window" ) );
+		Lib.current.stage.displayState = full ? StageDisplayState.FULL_SCREEN_INTERACTIVE : StageDisplayState.NORMAL;
+	}
+	
+	public static function isFullscreen():Bool {
+		return Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE;
+	}
 
     public static function setGamma( gamma:Float ):Void {
         #if flash
@@ -151,9 +213,19 @@ class Gaxe extends Scene
 			if ( e.type == KeyboardEvent.KEY_DOWN && e.keyCode == 219 ) {
 				Debug.toggleLog();
 			}
+			//Debug.log("key "+e.keyCode);
 			head.getCurrentScene().handleKey( e );
+			
+			#if neko
+			if ( e.keyCode == 115 && e.altKey )
+				quit();
+			#end
         #end
     }
+	
+	public static function quit():Void {
+		Lib.exit();
+	}
 
     private static function onTouchHandler( e:TouchEvent ):Void {
         var sendHandleEvent:Bool = true;
