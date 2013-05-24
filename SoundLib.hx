@@ -23,9 +23,13 @@ import nme.media.SoundTransform;
 import com.eclecticdesignstudio.motion.Actuate;
 import com.eclecticdesignstudio.motion.easing.Linear;
 
-typedef SoundInstance = {
-    var volume:Float;
-    var channel:SoundChannel;
+class SoundInstance {
+    public var volume:Float;
+    public var channel:SoundChannel;
+	public function new( channel:SoundChannel, volume:Float ) { 
+		this.volume = volume;
+		this.channel = channel;
+	}
 }
 
 class SoundLib
@@ -45,7 +49,6 @@ class SoundLib
         cache = [];
         sounds = new Hash<Sound>();
         for ( item in list )
-            //preload( "assets/sfx/"+item );
             preload( item );
 
     }
@@ -82,8 +85,7 @@ class SoundLib
         }
     }
 
-    public static function play( url:String, volume:Float = 1, loop:Bool = false, fadeIn:Float = 0 ):SoundChannel  {
-        //url = "assets/sfx/"+url;
+    public static function play( url:String, volume:Float = 1, loop:Bool = false, fade:Float = 0 ):SoundChannel  {
 		url += soundFileExtension;
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
@@ -96,20 +98,29 @@ class SoundLib
         #else
             loops = ( loop ? 1000 : 0 );
         #end
-		volume *= master;
-        var channel:SoundChannel = sound.play( 0, loops, new SoundTransform( fadeIn == 0 ? volume : 0 ) );
-        addChannel( channel, volume );
+        var channel:SoundChannel = sound.play( 0, loops, new SoundTransform( fade == 0 ? volume*master : 0 ) );
+        addChannel( channel, channel.soundTransform.volume );
         channel.addEventListener( Event.SOUND_COMPLETE, onSoundComplete );
-		if ( fadeIn != 0 )
-			Actuate.transform( channel, fadeIn ).sound( volume * master ).ease( Linear.easeNone );
+		if ( fade != 0 )
+			fadeIn( channel, fade, volume );
 		return channel;
     }
 	
+	private static function onUpdateChannelVolume( si:SoundInstance ):Void {
+		var t:SoundTransform = new SoundTransform( si.volume * master, 0 );
+		#if neko
+			si.channel.nmeSetTransform( t );
+		#else
+			si.channel.soundTransform = t;
+		#end
+	}
+	
 	public static function fadeOut( channel:SoundChannel, fadeOut:Float, keepRunning:Bool = false ):Void {
+		var si:SoundInstance = fetchSoundInstance( channel );
 		if ( keepRunning )
-			Actuate.transform( channel, fadeOut ).sound( 0 ).ease( Linear.easeNone );
+			Actuate.tween( si, fadeOut, { volume:0 } ).onUpdate( onUpdateChannelVolume, [ si ] ).ease( Linear.easeNone );
 		else
-			Actuate.transform( channel, fadeOut ).sound( 0 ).onComplete( stopChannel, [ channel ] ).ease( Linear.easeNone );
+			Actuate.tween( si, fadeOut, { volume:0 } ).onUpdate( onUpdateChannelVolume, [ si ] ).onComplete( stopChannel, [ channel ] ).ease( Linear.easeNone );
 	}
 	
 	public static function fadeIn( channel:SoundChannel, fadeIn:Float, volume:Float ):Void {
@@ -127,15 +138,22 @@ class SoundLib
 			#end
 		 * 
 		 * */
-		
-		Actuate.transform( channel, fadeIn ).sound( volume * master ).ease( Linear.easeNone );
+			
+		var si:SoundInstance = fetchSoundInstance( channel );
+		Actuate.tween( si, fadeIn, { volume:volume } ).onUpdate( onUpdateChannelVolume, [ si ] ).ease( Linear.easeNone );
 	}
 
     private static function addChannel( channel:SoundChannel, volume:Float ):Void {
-        var si:SoundInstance = { channel: channel, volume: volume };
-        //Debug.log("caching "+si);
+        var si:SoundInstance = new SoundInstance( channel, volume );
         cache.push( si );
     }
+	
+	private static function fetchSoundInstance( channel:SoundChannel ):SoundInstance {
+		for ( si in cache )
+			if ( si.channel == channel )
+				return si;
+		return null;
+	}
 
     private static function onSoundComplete( e:Event ):Void {
         //Debug.log( "sound complete "+e.target );
@@ -144,10 +162,8 @@ class SoundLib
     }
 
     public static function setMasterVolume( vol:Float ):Void {
-        //Debug.log("setting master "+vol);
         master = vol;
         for ( si in cache ) {
-            //Debug.log("setting master "+vol+" "+si);
             si.channel.soundTransform = new SoundTransform( si.volume * master, 0 );
         }
     }
@@ -170,19 +186,17 @@ class SoundLib
 		else
 			stopMusic();
         music = sound;   
-		volume *= master;
 		if ( music == null )
 			return null;
         #if android
-            musicChannel = music.play( 0, -1 , new SoundTransform( fade == 0 ? volume : 0 ));
+            musicChannel = music.play( 0, -1 , new SoundTransform( fade == 0 ? volume*master : 0 ));
 			// edit c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\android\template\src\org\haxe\nme\Sound.java playMusic and set mp.setLooping( true );
         #else
-            musicChannel = music.play( 0, 1000 , new SoundTransform( fade == 0 ? volume : 0 ));
+            musicChannel = music.play( 0, 1000 , new SoundTransform( fade == 0 ? volume*master : 0 ));
         #end
-        //Debug.log("music running, hopefully");
-        addChannel( musicChannel, 1 );
+        addChannel( musicChannel, volume );
 		if ( fade != 0 ) {
-			Actuate.transform( musicChannel, fade ).sound( volume * master ).ease( Linear.easeNone );
+			fadeIn( musicChannel, fade, volume );
 		}
 		return musicChannel;
     }

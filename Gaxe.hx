@@ -155,12 +155,12 @@ class Gaxe extends Scene
         
         prevFrameTime = Lib.getTimer() / 1000;
 
-		Lib.current.stage.addChild( Debug.initLog() );
         Debug.log("started...");
         //Debug.log("upscale "+upscale+" "+w+"x"+h);
         //Lib.current.stage.addChild( new Bitmap(Assets.getBitmapData( "assets/buttonRed.png" ), nme.display.PixelSnapping.AUTO, false ) );
         
 		onResize( null );
+		Lib.current.stage.addChild( Debug.initLog() );
 		
         head.visible = true;
 
