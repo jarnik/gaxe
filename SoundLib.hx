@@ -218,6 +218,10 @@ class SoundLib
             //Debug.log( "decaching "+s );
             break;
         }
+		if ( channel == musicChannel ) {
+			musicChannel = null;
+			music = null;
+		}
 	}
 	
 
