@@ -214,7 +214,7 @@ class Gaxe extends Scene
 				Debug.toggleLog();
 			}
 			//Debug.log("key "+e.keyCode);
-			head.getCurrentScene().handleKey( e );
+			head.handleKey( e );
 			
 			#if neko
 			if ( e.keyCode == 115 && e.altKey )
@@ -252,6 +252,10 @@ class Gaxe extends Scene
 	
 	public static function switchGlobalScene( newScene:Class<Scene> ):Void {
 		head.switchScene( newScene );
+	}
+	
+	override public function handleKey( e:KeyboardEvent ):Void {
+		getCurrentScene().handleKey( e );
 	}
 
 }
