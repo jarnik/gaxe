@@ -78,7 +78,7 @@ class Debug extends Sprite
             buffer = msg+"\n"+buffer;
             return;
         }
-        #if android
+        #if android || neko
         trace( msg );
         #end
 

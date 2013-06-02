@@ -37,6 +37,7 @@ class Gaxe extends Scene
 
     private static var timeElapsed:Float;
     private static var prevFrameTime:Float;
+    private static var keysPressed:Hash<Bool>;
 
     public static var menu:IMenu;
 
@@ -53,6 +54,7 @@ class Gaxe extends Scene
         fixedH = _fixedH;
         touchCount = 0;
         touches = [];
+		keysPressed = new Hash<Bool>();
 
         _head.visible = false;
         if ( _menu != null ) {
@@ -203,17 +205,28 @@ class Gaxe extends Scene
                     menu.hide();
             }
         #else
+			if (
+				( e.type == KeyboardEvent.KEY_UP && keysPressed.get( Std.string( e.keyCode ) ) == null ) ||
+				( e.type == KeyboardEvent.KEY_DOWN && keysPressed.get( Std.string( e.keyCode ) ) != null )
+			)
+				return;
+				
+			if ( e.type == KeyboardEvent.KEY_DOWN )
+				keysPressed.set( Std.string( e.keyCode ), true );
+			else
+				keysPressed.remove( Std.string( e.keyCode ) );
+		
             if ( e.type == KeyboardEvent.KEY_UP && e.charCode == 27 ) {
                 if ( !menu.isVisible() ) {
-                    if ( head.scene.allowMenu() )
+                    if ( head.scene.allowMenu() ) {
                         head.showMenu();
+					}
                 } else
                     menu.hide();
             }
-			if ( e.type == KeyboardEvent.KEY_DOWN && e.keyCode == 219 ) {
+			if ( e.type == KeyboardEvent.KEY_UP && e.keyCode == 219 ) {
 				Debug.toggleLog();
 			}
-			//Debug.log("key "+e.keyCode);
 			head.handleKey( e );
 			
 			#if neko
