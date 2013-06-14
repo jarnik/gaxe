@@ -118,6 +118,7 @@ class Gaxe extends Scene
         head.scaleX = upscale;
 		head.scaleY = upscale;
 		head.resize( w, h );
+		menu.resize( w, h );
 		Debug.resize();
 	}
 	
