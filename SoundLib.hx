@@ -45,6 +45,14 @@ class SoundLib
 	private static var musicFileExtension:String;
 
     public static function init( _master:Float, list:Array<String> ):Void {
+		#if !flash
+			soundFileExtension = ".ogg";
+			musicFileExtension = ".ogg";
+		#else
+			soundFileExtension = ".mp3";
+			musicFileExtension = ".ogg";
+		#end
+		
         master = _master; 
         cache = [];
         sounds = new Hash<Sound>();
@@ -59,7 +67,7 @@ class SoundLib
 		// to make resourceTypes public 
 		Assets.initialize();
 		
-		#if neko
+		#if !flash
 			soundFileExtension = ".ogg";
 			musicFileExtension = ".ogg";
 		#else
