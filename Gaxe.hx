@@ -199,11 +199,11 @@ class Gaxe extends Scene
             e.stopPropagation();
             // Android - BACK = 27
             if ( e.type == KeyboardEvent.KEY_UP && e.charCode == 27 ) {
-                if ( !menu.isVisible() ) {
+                if ( !mainMenu.isVisible() ) {
                     if ( head.scene.allowMenu() )
                         head.showMenu();
                 } else
-                    menu.hide();
+                    mainMenu.hide();
             }
         #else
 			if (
