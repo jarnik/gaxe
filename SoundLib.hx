@@ -1,6 +1,7 @@
 package gaxe;
 
-import nme.Assets;
+import openfl.Assets;
+import nme.AssetData;
 import nme.events.Event;
 import nme.events.MouseEvent;
 import nme.geom.Point;
@@ -20,8 +21,8 @@ import nme.events.KeyboardEvent;
 import nme.media.Sound;
 import nme.media.SoundChannel;
 import nme.media.SoundTransform;
-import com.eclecticdesignstudio.motion.Actuate;
-import com.eclecticdesignstudio.motion.easing.Linear;
+import motion.Actuate;
+import motion.easing.Linear;
 
 class SoundInstance {
     public var volume:Float;
@@ -35,7 +36,7 @@ class SoundInstance {
 class SoundLib
 {
     
-    public static var sounds:Hash<Sound>;
+    public static var sounds:Map<String,Sound>;
     private static var cache:Array<SoundInstance>;
     private static var master:Float;
     private static var music:Sound;
@@ -55,7 +56,7 @@ class SoundLib
 		
         master = _master; 
         cache = [];
-        sounds = new Hash<Sound>();
+        sounds = new Map<String,Sound>();
         for ( item in list )
             preload( item );
 
@@ -65,7 +66,7 @@ class SoundLib
 		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\flash\haxe\nme\installer\Assets.hx
 		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\haxe\nme\installer\Assets.hx
 		// to make resourceTypes public 
-		Assets.initialize();
+		AssetData.initialize();
 		
 		#if !flash
 			soundFileExtension = ".ogg";
@@ -76,8 +77,8 @@ class SoundLib
 		#end
 		
 		var soundAssets:Array<String> = [];
-		for ( k in Assets.resourceTypes.keys() ) {
-			if ( Assets.resourceTypes.get( k ) == "sound"  
+		for ( k in Assets.type.keys() ) {
+			if ( Assets.type.get( k ) == SOUND  
 				&& StringTools.endsWith( k, soundFileExtension ) ) {
 				soundAssets.push( k );
 			}

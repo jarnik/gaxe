@@ -27,12 +27,12 @@ class Scene extends Sprite
     // scene vars
     private var created:Bool;
     private var scene:Scene;
-    private var scenes:Hash<Scene>;
+    private var scenes:Map<String,Scene>;
     private var state:Dynamic;
 
     // components
     private var sceneLayer:Sprite;
-    private var menu( getMenu, never ):IMenu;
+    private var menu( get_menu, never ):IMenu;
    
     /*
     has multiple states
@@ -108,7 +108,7 @@ class Scene extends Sprite
     public function showMenu():Void {
         menu.show( null );
     }
-    private function getMenu():IMenu { return Gaxe.menu; }
+    private function get_menu():IMenu { return Gaxe.mainMenu; }
     public function allowMenu():Bool { return true; }
 
     // --------------- SCENES ------------------------------------------------------- 
@@ -135,7 +135,7 @@ class Scene extends Sprite
     //private function fetchScene( sceneClass:Dynamic ):Scene {
         var id:String = Std.string( sceneClass );
         if ( scenes == null )
-            scenes = new Hash<Scene>();
+            scenes = new Map<String,Scene>();
 
         var scene:Scene = scenes.get( id );
         if ( scene != null ) {

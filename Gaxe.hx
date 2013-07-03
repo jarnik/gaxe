@@ -37,9 +37,9 @@ class Gaxe extends Scene
 
     private static var timeElapsed:Float;
     private static var prevFrameTime:Float;
-    private static var keysPressed:Hash<Bool>;
+    private static var keysPressed:Map<String,Bool>;
 
-    public static var menu:IMenu;
+    public static var mainMenu:IMenu;
 
     private function init():Void {}
 
@@ -49,17 +49,17 @@ class Gaxe extends Scene
 
     public static function loadGaxe( _head:Gaxe, _menu:IMenu, _fixedW:Int = 0, _fixedH:Int = 0 ):Void {
         Gaxe.head = _head;
-        Gaxe.menu = _menu;
+        Gaxe.mainMenu = _menu;
         fixedW = _fixedW;
         fixedH = _fixedH;
         touchCount = 0;
         touches = [];
-		keysPressed = new Hash<Bool>();
+		keysPressed = new Map<String,Bool>();
 
         _head.visible = false;
         if ( _menu != null ) {
-            menu.hide();
-            Gaxe.head.addChild( menu.getDisplayObject() );
+            _menu.hide();
+            Gaxe.head.addChild( _menu.getDisplayObject() );
         }
         Lib.current.stage.addChild( head );
         Lib.current.stage.addEventListener( Event.ENTER_FRAME, updateFrame );
@@ -81,9 +81,9 @@ class Gaxe extends Scene
         var now:Float = Lib.getTimer() / 1000;
         timeElapsed = (now - prevFrameTime);
         prevFrameTime = now;
-
-        if ( menu != null &&  menu.isVisible() )
-            menu.update( timeElapsed );        
+		
+        if ( mainMenu != null &&  mainMenu.isVisible() )
+            mainMenu.update( timeElapsed );        
         else
             head.update( timeElapsed );        
     }
@@ -118,7 +118,7 @@ class Gaxe extends Scene
         head.scaleX = upscale;
 		head.scaleY = upscale;
 		head.resize( w, h );
-		menu.resize( w, h );
+		mainMenu.resize( w, h );
 		Debug.resize();
 	}
 	
@@ -218,12 +218,12 @@ class Gaxe extends Scene
 				keysPressed.remove( Std.string( e.keyCode ) );
 		
             if ( e.type == KeyboardEvent.KEY_UP && e.charCode == 27 ) {
-                if ( !menu.isVisible() ) {
+                if ( !mainMenu.isVisible() ) {
                     if ( head.scene.allowMenu() ) {
                         head.showMenu();
 					}
                 } else
-                    menu.hide();
+                    mainMenu.hide();
             }
 			if ( e.type == KeyboardEvent.KEY_UP && e.keyCode == 219 ) {
 				Debug.toggleLog();
@@ -238,7 +238,9 @@ class Gaxe extends Scene
     }
 	
 	public static function quit():Void {
-		Lib.exit();
+		#if !flash
+		Sys.exit( 0 );
+		#end
 	}
 
     private static function onTouchHandler( e:TouchEvent ):Void {
