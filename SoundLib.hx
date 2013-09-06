@@ -46,12 +46,16 @@ class SoundLib
 	private static var musicFileExtension:String;
 
     public static function init( _master:Float, list:Array<String> ):Void {
-		#if !flash
-			soundFileExtension = ".ogg";
+		#if flash
+			musicFileExtension = ".mp3";
+		#else
 			musicFileExtension = ".ogg";
+		#end
+		
+		#if neko
+			soundFileExtension = ".ogg";
 		#else
 			soundFileExtension = ".mp3";
-			musicFileExtension = ".ogg";
 		#end
 		
         master = _master; 
