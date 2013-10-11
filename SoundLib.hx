@@ -121,11 +121,11 @@ class SoundLib
 	
 	private static function onUpdateChannelVolume( si:SoundInstance ):Void {
 		var t:SoundTransform = new SoundTransform( si.volume * master, 0 );
-		#if neko
+		/*#if neko
 			si.channel.nmeSetTransform( t );
-		#else
+		#else*/
 			si.channel.soundTransform = t;
-		#end
+		//#end
 	}
 	
 	public static function fadeOut( channel:SoundChannel, fadeOut:Float, keepRunning:Bool = false ):Void {

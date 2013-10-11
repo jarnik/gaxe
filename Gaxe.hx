@@ -231,8 +231,10 @@ class Gaxe extends Scene
 			head.handleKey( e );
 			
 			#if neko
-			if ( e.keyCode == 115 && e.altKey )
+			// ALT + F4 quit
+			if ( (e.keyCode == 115 || e.keyCode == 83) && e.altKey ) {
 				quit();
+			}
 			#end
         #end
     }
