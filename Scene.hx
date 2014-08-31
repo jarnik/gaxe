@@ -4,6 +4,7 @@ import nme.Assets;
 import nme.events.Event;
 import nme.events.MouseEvent;
 import nme.events.TouchEvent;
+import nme.events.JoystickEvent;
 import nme.geom.Point;
 import nme.display.Bitmap;
 import nme.display.FPS;
@@ -161,4 +162,6 @@ class Scene extends Sprite
     public function handleTouch( e:TouchEvent ):Void { } // override
 	
     public function handleKey( e:KeyboardEvent ):Void {} // override
+
+    public function handleJoy( e:JoystickEvent ):Void {} // override
 }

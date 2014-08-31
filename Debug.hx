@@ -34,6 +34,7 @@ class Debug extends Sprite
     public static function initLog():Sprite {
         font = Assets.getFont ("assets/fonts/nokiafc22.ttf");
         format = new TextFormat (font.fontName, 8, 0xFF0000);
+        //format = new TextFormat (font.fontName, 8, 0xffffff);
 
         debugLayer = new Sprite();
         debug = new TextField(); 
@@ -51,6 +52,8 @@ class Debug extends Sprite
 
         debugLayer.mouseEnabled = false;
         debugLayer.visible = false;
+
+        resize();
 
         //Lib.current.stage.addChild( new FPS( 10, 10, 0xffffff ) );
         return debugLayer;
@@ -78,7 +81,7 @@ class Debug extends Sprite
             buffer = msg+"\n"+buffer;
             return;
         }
-        #if (android || neko)
+        #if (android)// || neko)
         trace( msg );
         #end
 

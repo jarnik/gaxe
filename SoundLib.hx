@@ -1,7 +1,7 @@
 package gaxe;
 
 import openfl.Assets;
-import nme.AssetData;
+//import nme.AssetData;
 import nme.events.Event;
 import nme.events.MouseEvent;
 import nme.geom.Point;
@@ -21,8 +21,8 @@ import nme.events.KeyboardEvent;
 import nme.media.Sound;
 import nme.media.SoundChannel;
 import nme.media.SoundTransform;
-import motion.Actuate;
-import motion.easing.Linear;
+//import motion.Actuate;
+//import motion.easing.Linear;
 
 class SoundInstance {
     public var volume:Float;
@@ -70,7 +70,7 @@ class SoundLib
 		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\flash\haxe\nme\installer\Assets.hx
 		// edit your c:\Program Files\nme\haxe\lib\nme\3,4,2\templates\default\haxe\nme\installer\Assets.hx
 		// to make resourceTypes public 
-		AssetData.initialize();
+		//AssetData.initialize();
 		
 		#if !flash
 			soundFileExtension = ".ogg";
@@ -80,6 +80,7 @@ class SoundLib
 			musicFileExtension = ".ogg";
 		#end
 		
+		/*
 		var soundAssets:Array<String> = [];
 		for ( k in Assets.type.keys() ) {
 			if ( Assets.type.get( k ) == SOUND  
@@ -88,6 +89,8 @@ class SoundLib
 			}
 		}
 		init( _master, soundAssets );
+		*/
+		init( _master, [] );
 	}
 	
     private static function preload( url:String ):Void {
@@ -105,12 +108,7 @@ class SoundLib
             sound = Assets.getSound( url );
             sounds.set( url, sound );
         }
-		var loops:Int = 0;
-        #if windows
-           loops = ( loop ? -1 : 0 );
-        #else
-            loops = ( loop ? 1000 : 0 );
-        #end
+		var loops:Int = ( loop ? 1000 : 0 );
         var channel:SoundChannel = sound.play( 0, loops, new SoundTransform( fade == 0 ? volume*master : 0 ) );
         addChannel( channel, channel.soundTransform.volume );
         channel.addEventListener( Event.SOUND_COMPLETE, onSoundComplete );
@@ -120,20 +118,27 @@ class SoundLib
     }
 	
 	private static function onUpdateChannelVolume( si:SoundInstance ):Void {
-		var t:SoundTransform = new SoundTransform( si.volume * master, 0 );
+		setChannelVolume( si.channel, si.volume );
+	}
+
+	public static function setChannelVolume(channel:SoundChannel, volume:Float):Void
+	{
+		var t:SoundTransform = new SoundTransform( volume * master, 0 );
 		/*#if neko
-			si.channel.nmeSetTransform( t );
+			channel.nmeSetTransform( t );
 		#else*/
-			si.channel.soundTransform = t;
+			channel.soundTransform = t;
 		//#end
 	}
 	
 	public static function fadeOut( channel:SoundChannel, fadeOut:Float, keepRunning:Bool = false ):Void {
 		var si:SoundInstance = fetchSoundInstance( channel );
+		/*
 		if ( keepRunning )
 			Actuate.tween( si, fadeOut, { volume:0 } ).onUpdate( onUpdateChannelVolume, [ si ] ).ease( Linear.easeNone );
 		else
 			Actuate.tween( si, fadeOut, { volume:0 } ).onUpdate( onUpdateChannelVolume, [ si ] ).onComplete( stopChannel, [ channel ] ).ease( Linear.easeNone );
+			*/
 	}
 	
 	public static function fadeIn( channel:SoundChannel, fadeIn:Float, volume:Float ):Void {
@@ -153,7 +158,7 @@ class SoundLib
 		 * */
 			
 		var si:SoundInstance = fetchSoundInstance( channel );
-		Actuate.tween( si, fadeIn, { volume:volume } ).onUpdate( onUpdateChannelVolume, [ si ] ).ease( Linear.easeNone );
+		//Actuate.tween( si, fadeIn, { volume:volume } ).onUpdate( onUpdateChannelVolume, [ si ] ).ease( Linear.easeNone );
 	}
 
     private static function addChannel( channel:SoundChannel, volume:Float ):Void {

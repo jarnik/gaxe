@@ -3,6 +3,7 @@ package gaxe;
 import nme.Assets;
 import nme.events.Event;
 import nme.events.MouseEvent;
+import nme.events.JoystickEvent;
 import nme.events.TouchEvent;
 import nme.geom.Point;
 import nme.geom.ColorTransform;
@@ -66,6 +67,10 @@ class Gaxe extends Scene
         Lib.current.stage.addEventListener( Event.RESIZE, onResize );
         Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyHandler );
         Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP, onKeyHandler );
+        Lib.current.stage.addEventListener( JoystickEvent.BUTTON_DOWN, onJoyHandler );
+        Lib.current.stage.addEventListener( JoystickEvent.BUTTON_UP, onJoyHandler );
+        Lib.current.stage.addEventListener( JoystickEvent.HAT_MOVE, onJoyHandler );
+        Lib.current.stage.addEventListener( JoystickEvent.AXIS_MOVE, onJoyHandler );
 
         #if android
         Lib.current.stage.addEventListener( TouchEvent.TOUCH_END, onTouchHandler );
@@ -238,6 +243,10 @@ class Gaxe extends Scene
 			#end
         #end
     }
+
+    private static function onJoyHandler( e:JoystickEvent ):Void {
+        head.handleJoy( e );
+    }
 	
 	public static function quit():Void {
 		#if !flash
@@ -275,5 +284,9 @@ class Gaxe extends Scene
 	override public function handleKey( e:KeyboardEvent ):Void {
 		getCurrentScene().handleKey( e );
 	}
+
+    override public function handleJoy( e:JoystickEvent ):Void {
+        getCurrentScene().handleJoy( e );
+    }
 
 }
