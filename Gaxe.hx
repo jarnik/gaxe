@@ -286,7 +286,10 @@ class Gaxe extends Scene
 	}
 
     override public function handleJoy( e:JoystickEvent ):Void {
-        getCurrentScene().handleJoy( e );
+        if ( getCurrentScene() != null )
+        {
+            getCurrentScene().handleJoy( e );
+        }
     }
 
 }
