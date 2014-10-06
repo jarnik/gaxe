@@ -225,7 +225,7 @@ class Gaxe extends Scene
             if ( e.type == KeyboardEvent.KEY_UP && e.charCode == 27 ) {
                 if ( !mainMenu.isVisible() ) {
                     if ( head.scene.allowMenu() ) {
-                        head.showMenu();
+                        head.scene.showMenu();
 					}
                 } else
                     mainMenu.hide();
