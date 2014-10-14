@@ -82,5 +82,9 @@ class AnimatedSprite extends Sprite
         return currentFrame;
     }
 
+    public function getFrame(frame:Int):BitmapData {
+        return frames[ frame ].bitmapData;
+    }
+
     public function getFrameCount():Int { return frames.length; }
 }
