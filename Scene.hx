@@ -115,8 +115,8 @@ class Scene extends Sprite
     // --------------- SCENES ------------------------------------------------------- 
 
     public function switchScene( newScene:Class<Scene> ):Void {
-        var id:String = Std.string( newScene );
-        Debug.log("["+this+"] switching to scene: "+id);
+        var id:String = Type.getClassName( newScene );
+        trace("["+this+"] switching to scene: "+id);
         if ( scene != null ) {
             scene.visible = false;
 		    sceneLayer.removeChild( scene );
@@ -134,7 +134,7 @@ class Scene extends Sprite
 
     private function fetchScene( sceneClass:Class<Scene> ):Scene {
     //private function fetchScene( sceneClass:Dynamic ):Scene {
-        var id:String = Std.string( sceneClass );
+        var id:String = Type.getClassName( sceneClass );
         if ( scenes == null )
             scenes = new Map<String,Scene>();
 
