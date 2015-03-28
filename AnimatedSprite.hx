@@ -1,14 +1,14 @@
 package gaxe;
 
-import nme.Assets;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Sprite;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import openfl.Assets;
+import openfl.display.Bitmap;
+import openfl.display.BitmapData;
+import openfl.display.Sprite;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 
-import nme.text.TextField;
-import nme.text.TextFormat;
+import openfl.text.TextField;
+import openfl.text.TextFormat;
 
 class AnimatedSprite extends Sprite
 {
@@ -41,7 +41,7 @@ class AnimatedSprite extends Sprite
             rect.x = offsetX;
             rect.y = offsetY;
             frameBitmapData.copyPixels( bitmapData, rect, point );
-            frame = new Bitmap( frameBitmapData, nme.display.PixelSnapping.AUTO );
+            frame = new Bitmap( frameBitmapData, openfl.display.PixelSnapping.AUTO );
             addChild( frame );
             frame.visible = false;
             frames.push( frame );
