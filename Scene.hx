@@ -1,24 +1,24 @@
 package gaxe;
 
-import nme.Assets;
-import nme.events.Event;
-import nme.events.MouseEvent;
-import nme.events.TouchEvent;
-import nme.events.JoystickEvent;
-import nme.geom.Point;
-import nme.display.Bitmap;
-import nme.display.FPS;
-import nme.display.Graphics;
-import nme.display.Sprite;
-import nme.display.Stage;
-import nme.display.StageAlign;
-import nme.display.StageScaleMode;
-import nme.geom.Rectangle;
-import nme.Lib;
-import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.events.KeyboardEvent;
-import nme.media.Sound;
+import openfl.Assets;
+import openfl.events.Event;
+import openfl.events.MouseEvent;
+import openfl.events.TouchEvent;
+import openfl.events.JoystickEvent;
+import openfl.geom.Point;
+import openfl.display.Bitmap;
+import openfl.display.FPS;
+import openfl.display.Graphics;
+import openfl.display.Sprite;
+import openfl.display.Stage;
+import openfl.display.StageAlign;
+import openfl.display.StageScaleMode;
+import openfl.geom.Rectangle;
+import openfl.Lib;
+import openfl.text.TextField;
+import openfl.text.TextFormat;
+import openfl.events.KeyboardEvent;
+import openfl.media.Sound;
 
 class Scene extends Sprite 
 {

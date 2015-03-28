@@ -1,6 +1,6 @@
 package gaxe;
 
-import nme.display.DisplayObject;
+import openfl.display.DisplayObject;
 
 interface IMenu {
     function show( state:EnumValue, params:Dynamic = null ):Void;
