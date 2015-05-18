@@ -20,6 +20,9 @@ import openfl.text.Font;
 import openfl.text.TextFormat;
 import openfl.events.KeyboardEvent;
 import openfl.media.Sound;
+#if weblog
+import Weblog;
+#end
 
 class Debug extends Sprite 
 {
@@ -74,7 +77,15 @@ class Debug extends Sprite
         debug.width = Lib.current.stage.stageWidth;
 	}
 
-    public static function log( msg:String ):Void {
+    public static function log( msg:String ):Void 
+    {
+
+#if weblog
+        //haxelib run weblog
+        var stacktrace:String = haxe.CallStack.toString(haxe.CallStack.callStack());
+        var out:String = msg+"\n"+stacktrace;
+        Weblog.log( msg, stacktrace ); //out );
+#else
         if ( buffer == null )
             buffer = "";
         if ( debug == null ) {
@@ -84,8 +95,8 @@ class Debug extends Sprite
         #if (android )//|| neko)
         trace( msg + "\n" );// + haxe.CallStack.toString(haxe.CallStack.callStack() ) );
         #end
-
-        debug.text = msg+"\n"+debug.text;
+        //debug.text = msg+"\n"+debug.text;
+#end
     }
 
 }
