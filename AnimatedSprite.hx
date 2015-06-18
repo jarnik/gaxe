@@ -12,8 +12,13 @@ import openfl.text.TextFormat;
 
 class AnimatedSprite extends Sprite
 {
+
+    public var fps:Float = 0;
+    public var randomFrames:Bool = false;
+
     private var frames:Array<Bitmap>;
     private var currentFrame:Int;
+    private var timer:Float = 0;
 
 	public function new( url:String, ?width:Float, ?height:Float ) 
 	{
@@ -84,6 +89,24 @@ class AnimatedSprite extends Sprite
 
     public function getFrame(frame:Int):BitmapData {
         return frames[ frame ].bitmapData;
+    }
+
+    public function update(elapsed:Float):Void
+    {
+        if (this.fps > 0)
+        {
+            this.timer += elapsed;
+            if ( this.timer > 1/this.fps )
+            {
+                this.timer = 0;
+                var frame:Int = (currentFrame + 1) % this.getFrameCount();
+                if ( this.randomFrames )
+                {
+                    frame = Math.floor( this.getFrameCount() * Math.random() );
+                }
+                this.setFrame( frame );
+            }
+        }
     }
 
     public function getFrameCount():Int { return frames.length; }

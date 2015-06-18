@@ -85,6 +85,7 @@ class Debug extends Sprite
         var stacktrace:String = haxe.CallStack.toString(haxe.CallStack.callStack());
         var out:String = msg+"\n"+stacktrace;
         Weblog.log( msg, stacktrace ); //out );
+        trace(msg);
 #else
         if ( buffer == null )
             buffer = "";
