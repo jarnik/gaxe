@@ -19,11 +19,16 @@ class AnimatedSprite extends Sprite
     private var frames:Array<Bitmap>;
     private var currentFrame:Int;
     private var timer:Float = 0;
+    public var loop:Bool = true;
 
 	public function new( url:String, ?width:Float, ?height:Float ) 
 	{
         super();
+        setImage(url, width, height);
+    }
 
+    public function setImage(url:String, ?width:Float, ?height:Float ):Void
+    {
         var bitmapData:BitmapData = Assets.getBitmapData( url );
 
         frames = [];
@@ -58,7 +63,7 @@ class AnimatedSprite extends Sprite
         }
         currentFrame = 0;        
         setFrame( 0 );
-	}
+    }
 
    	public function setFrame( f:Int ):Void {
         if ( frames == null || frames.length <= f )  
@@ -93,16 +98,29 @@ class AnimatedSprite extends Sprite
 
     public function update(elapsed:Float):Void
     {
-        if (this.fps > 0)
+        if (this.fps != 0)
         {
             this.timer += elapsed;
-            if ( this.timer > 1/this.fps )
+            if ( this.timer > Math.abs(1/this.fps) )
             {
                 this.timer = 0;
-                var frame:Int = (currentFrame + 1) % this.getFrameCount();
+                var frame:Int;
                 if ( this.randomFrames )
                 {
                     frame = Math.floor( this.getFrameCount() * Math.random() );
+                } else 
+                {                    
+                    frame = (currentFrame + (fps > 0 ? 1 : -1 ));
+                    if (!this.loop)
+                    {
+                        if (
+                            ((this.fps > 0) && (frame >= this.getFrameCount() - 1 )) ||
+                            ((this.fps < 0) && (frame <= 0))
+                        ) {
+                            this.fps = 0; // stop
+                        }
+                    }
+                    frame = (frame + this.getFrameCount()) % this.getFrameCount();
                 }
                 this.setFrame( frame );
             }
