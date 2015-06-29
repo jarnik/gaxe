@@ -10,6 +10,12 @@ import openfl.geom.Rectangle;
 import openfl.text.TextField;
 import openfl.text.TextFormat;
 
+typedef Animation =
+{
+    frames: Array<Int>,
+    fps: Float
+}
+
 class AnimatedSprite extends Sprite
 {
 
@@ -18,16 +24,23 @@ class AnimatedSprite extends Sprite
 
     private var frames:Array<Bitmap>;
     private var currentFrame:Int;
+
     private var timer:Float = 0;
     public var loop:Bool = true;
 
-	public function new( url:String, ?width:Float, ?height:Float ) 
+    private var animations:Map<String,Animation>;
+    private var currentAnimation:String;
+    private var currentAnimationFrame:Int = 0;
+
+	public function new( url:String, width:Float = 0, height:Float = 0 ) 
 	{
         super();
+        animations = new Map<String,Animation>();
+        currentAnimation = null;
         setImage(url, width, height);
     }
 
-    public function setImage(url:String, ?width:Float, ?height:Float ):Void
+    public function setImage(url:String, width:Float = 0, height:Float = 0 ):Void
     {
         var bitmapData:BitmapData = Assets.getBitmapData( url );
 
@@ -35,9 +48,9 @@ class AnimatedSprite extends Sprite
 
         var frameWidth:Float = bitmapData.height;
         var frameHeight:Float = bitmapData.height;
-        if ( width != null )
+        if ( width !=  0  )
             frameWidth = width;
-        if ( height != null )
+        if ( height != 0 )
             frameHeight = height;
         var frameCount:Int = Std.int((bitmapData.width / frameWidth) * (bitmapData.height / frameHeight));
         var frame:Bitmap;
@@ -108,11 +121,24 @@ class AnimatedSprite extends Sprite
                 if ( this.randomFrames )
                 {
                     frame = Math.floor( this.getFrameCount() * Math.random() );
-                } else 
+                } if (this.currentAnimation != null)
+                {
+                    var animationFrames:Int = this.animations[this.currentAnimation].frames.length;
+                    this.currentAnimationFrame = (this.currentAnimationFrame + 1) % animationFrames;
+                    frame = this.animations[this.currentAnimation].frames[this.currentAnimationFrame];
+                    if (!this.loop && this.currentAnimationFrame == animationFrames-1)
+                    {
+                        // stop
+                        this.currentAnimation = null;
+                        this.currentAnimationFrame = 0;
+                        this.fps = 0;
+                    }
+                }
+                else 
                 {                    
                     frame = (currentFrame + (fps > 0 ? 1 : -1 ));
                     if (!this.loop)
-                    {
+                    {                        
                         if (
                             ((this.fps > 0) && (frame >= this.getFrameCount() - 1 )) ||
                             ((this.fps < 0) && (frame <= 0))
@@ -121,11 +147,30 @@ class AnimatedSprite extends Sprite
                         }
                     }
                     frame = (frame + this.getFrameCount()) % this.getFrameCount();
-                }
+                }                
                 this.setFrame( frame );
             }
         }
     }
 
     public function getFrameCount():Int { return frames.length; }
+
+    public function addAnimation(name:String, frames:Array<Int>, fps:Float):Void
+    {
+        this.animations[name] = {frames:frames,fps:fps};
+    }
+
+    public function playAnimation(name:String, loop:Bool = false):Void
+    {
+        if (this.currentAnimation == name)
+        {
+            return;
+        }
+        this.loop = loop;
+        this.currentAnimation = name;
+        this.currentAnimationFrame = 0;
+        this.fps = this.animations[name].fps;
+        this.timer = 0;
+        setFrame(this.animations[name].frames[0]);
+    }
 }
