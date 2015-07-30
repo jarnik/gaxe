@@ -32,7 +32,7 @@ class AnimatedSprite extends Sprite
     private var currentAnimation:String;
     private var currentAnimationFrame:Int = 0;
 
-	public function new( url:String, width:Float = 0, height:Float = 0 ) 
+	public function new( url:String, width:Float = 0, height:Float = 0 )
 	{
         super();
         animations = new Map<String,Animation>();
@@ -56,7 +56,7 @@ class AnimatedSprite extends Sprite
         var frame:Bitmap;
         var frameBitmapData:BitmapData;
         var rect:Rectangle = new Rectangle( 0, 0, frameWidth, frameHeight );
-        var point:Point = new Point();  
+        var point:Point = new Point();
         var offsetX:Int = 0;
         var offsetY:Int = 0;
         for ( i in 0...frameCount ) {
@@ -74,12 +74,12 @@ class AnimatedSprite extends Sprite
                 offsetY += Std.int( frameHeight );
             }
         }
-        currentFrame = 0;        
+        currentFrame = 0;
         setFrame( 0 );
     }
 
    	public function setFrame( f:Int ):Void {
-        if ( frames == null || frames.length <= f )  
+        if ( frames == null || frames.length <= f )
             return;
 
         #if !flash
@@ -89,9 +89,9 @@ class AnimatedSprite extends Sprite
 
         frames[ currentFrame ].visible = false;
 
-        // !! win build has some problems with assighing this number directly 
-        for ( i in 0...frames.length ) 
-            if ( i == f ) 
+        // !! win build has some problems with assighing this number directly
+        for ( i in 0...frames.length )
+            if ( i == f )
                 currentFrame = i;
 
         frames[ currentFrame ].visible = true;
@@ -134,11 +134,11 @@ class AnimatedSprite extends Sprite
                         this.fps = 0;
                     }
                 }
-                else 
-                {                    
+                else
+                {
                     frame = (currentFrame + (fps > 0 ? 1 : -1 ));
                     if (!this.loop)
-                    {                        
+                    {
                         if (
                             ((this.fps > 0) && (frame >= this.getFrameCount() - 1 )) ||
                             ((this.fps < 0) && (frame <= 0))
@@ -147,7 +147,7 @@ class AnimatedSprite extends Sprite
                         }
                     }
                     frame = (frame + this.getFrameCount()) % this.getFrameCount();
-                }                
+                }
                 this.setFrame( frame );
             }
         }
@@ -160,7 +160,7 @@ class AnimatedSprite extends Sprite
         this.animations[name] = {frames:frames,fps:fps};
     }
 
-    public function playAnimation(name:String, loop:Bool = false):Void
+    public function playAnimation(name:String, loop:Bool = false, delayedStart:Float = 0):Void
     {
         if (this.currentAnimation == name)
         {
@@ -170,7 +170,7 @@ class AnimatedSprite extends Sprite
         this.currentAnimation = name;
         this.currentAnimationFrame = 0;
         this.fps = this.animations[name].fps;
-        this.timer = 0;
+        this.timer = -delayedStart; // set to positive value to delay playback
         setFrame(this.animations[name].frames[0]);
     }
 }
