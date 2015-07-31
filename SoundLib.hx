@@ -52,7 +52,7 @@ class SoundLib
 			musicFileExtension = ".ogg";
 		#end
 		
-		#if neko
+		#if (neko || cpp)
 			soundFileExtension = ".ogg";
 		#else
 			soundFileExtension = ".mp3";
