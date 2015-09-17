@@ -101,7 +101,7 @@ class SoundLib
         }
     }
 
-    public static function play( url:String, volume:Float = 1, loop:Bool = false, fade:Float = 0 ):SoundChannel  {
+    public static function play( url:String, volume:Float = 1, loop:Bool = false, fade:Float = 0, position:Float = 0 ):SoundChannel  {
 		url += soundFileExtension;
         var sound:Sound = sounds.get( url );
         if ( sound == null ) {
@@ -109,7 +109,7 @@ class SoundLib
             sounds.set( url, sound );
         }
 		var loops:Int = ( loop ? 1000 : 0 );
-        var channel:SoundChannel = sound.play( 0, loops, new SoundTransform( fade == 0 ? volume*master : 0 ) );
+        var channel:SoundChannel = sound.play( position, loops, new SoundTransform( fade == 0 ? volume*master : 0 ) );
         addChannel( channel, channel.soundTransform.volume );
         channel.addEventListener( Event.SOUND_COMPLETE, onSoundComplete );
 		if ( fade != 0 )
