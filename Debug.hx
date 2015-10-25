@@ -93,7 +93,7 @@ class Debug extends Sprite
             buffer = msg+"\n"+buffer;
             return;
         }
-        #if (android )//|| neko)
+        #if (android || neko)
         trace( msg + "\n" );// + haxe.CallStack.toString(haxe.CallStack.callStack() ) );
         #end
         //debug.text = msg+"\n"+debug.text;
